@@ -1,0 +1,63 @@
+import React, { useState, useEffect } from 'react';
+
+const Create = () => {
+  const [time, setTime] = useState(0); // Time in seconds
+  const [isRunning, setIsRunning] = useState(false); // Timer state
+
+  useEffect(() => {
+    let interval = null;
+
+    // Start the timer
+    if (isRunning) {
+      interval = setInterval(() => {
+        setTime(prevTime => prevTime + 1);
+      }, 1000); 
+    } else if (!isRunning && time !== 0) {
+      clearInterval(interval); // Stop the timer
+    }
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, [isRunning, time]);
+
+  // Format time in HH:MM:SS
+  const formatTime = () => {
+    const hours = String(Math.floor(time / 3600)).padStart(2, '0');
+    const minutes = String(Math.floor((time % 3600) / 60)).padStart(2, '0');
+    const seconds = String(time % 60).padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
+  };
+
+  // Start the timer
+  const handleStart = () => {
+    setIsRunning(true);
+  };
+
+  // Stop the timer
+  const handleStop = () => {
+    setIsRunning(false);
+  };
+
+  // Reset the timer
+  const handleReset = () => {
+    setIsRunning(false);
+    setTime(0);
+  };
+
+  return (
+    <div className="p-4">
+      <h1 className="text-2xl mb-4">Timer</h1>
+      <p className="text-xl mb-4">{formatTime()}</p>
+      <button onClick={handleStart} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
+        Start
+      </button>
+      <button onClick={handleStop} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2">
+        Stop
+      </button>
+      <button onClick={handleReset} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+        Reset
+      </button>
+    </div>
+  );
+};
+
+export default Create;
